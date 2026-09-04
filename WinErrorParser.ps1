@@ -1226,12 +1226,16 @@ function Reset-DiagnosticsState {
 function Clear-OneEventLog {
     param([Parameter(Mandatory)][string]$LogName)
     try {
-        wevtutil.exe cl "$LogName" 2>&1 | Out-Null
-        if ($LASTEXITCODE -eq 0) {
+        $p = Start-Process -FilePath "$env:SystemRoot\System32\wevtutil.exe" `
+            -ArgumentList @('cl', $LogName) `
+            -Wait -PassThru -NoNewWindow -WindowStyle Hidden -ErrorAction Stop
+        if ($p.ExitCode -eq 0) {
             Write-Host ("  [OK] Очищен: {0}" -f $LogName) -ForegroundColor Green
             return $true
         }
-        # Fallback
+    } catch {}
+
+    try {
         $session = [System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession
         $session.ClearLog($LogName)
         Write-Host ("  [OK] Очищен: {0}" -f $LogName) -ForegroundColor Green
