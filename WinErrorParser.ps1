@@ -1215,52 +1215,200 @@ function Show-Summary {
     }
 }
 
+function Reset-DiagnosticsState {
+    $Script:Report = New-Object System.Text.StringBuilder
+    $Script:IssueCount = 0
+    $Script:CriticalCount = 0
+    $Script:Findings = New-Object System.Collections.ArrayList
+    $Script:StartDate = (Get-Date).AddDays(-$Script:DaysBack)
+}
+
+function Clear-OneEventLog {
+    param([Parameter(Mandatory)][string]$LogName)
+    try {
+        wevtutil.exe cl "$LogName" 2>&1 | Out-Null
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host ("  [OK] Очищен: {0}" -f $LogName) -ForegroundColor Green
+            return $true
+        }
+        # Fallback
+        $session = [System.Diagnostics.Eventing.Reader.EventLogSession]::GlobalSession
+        $session.ClearLog($LogName)
+        Write-Host ("  [OK] Очищен: {0}" -f $LogName) -ForegroundColor Green
+        return $true
+    } catch {
+        Write-Host ("  [ОШИБКА] {0}: {1}" -f $LogName, $_.Exception.Message) -ForegroundColor Red
+        return $false
+    }
+}
+
+function Invoke-ClearEventLogs {
+    Clear-Host
+    Write-Host ''
+    Write-Host ('=' * 72) -ForegroundColor Cyan
+    Write-Host '  ОЧИСТКА ЖУРНАЛОВ СОБЫТИЙ WINDOWS' -ForegroundColor Cyan
+    Write-Host ('=' * 72) -ForegroundColor Cyan
+    Write-Host ''
+
+    if (-not (Test-IsAdmin)) {
+        Write-Host '  Нужны права администратора. Запустите Start-WinErrorParser.bat от администратора.' -ForegroundColor Red
+        Write-Host ''
+        Read-Host 'Нажмите ENTER для возврата в меню'
+        return
+    }
+
+    Write-Host '  Внимание: очистка необратима. Старые записи ошибок исчезнут.' -ForegroundColor Yellow
+    Write-Host '  Имеет смысл после диагностики и сохранения отчёта.' -ForegroundColor DarkGray
+    Write-Host ''
+    Write-Host '  1. Основные журналы (System, Application, Setup)'
+    Write-Host '  2. Основные + Security'
+    Write-Host '  3. Все включённые журналы (долго, агрессивно)'
+    Write-Host '  0. Назад в меню'
+    Write-Host ''
+    $mode = Read-Host 'Выберите режим очистки'
+
+    $logs = @()
+    switch ($mode) {
+        '1' { $logs = @('System', 'Application', 'Setup') }
+        '2' { $logs = @('System', 'Application', 'Setup', 'Security') }
+        '3' {
+            try {
+                $logs = @(Get-WinEvent -ListLog * -ErrorAction SilentlyContinue |
+                    Where-Object { $_.IsEnabled -and $_.RecordCount -gt 0 } |
+                    Select-Object -ExpandProperty LogName)
+            } catch {
+                $logs = @('System', 'Application', 'Setup')
+            }
+        }
+        '0' { return }
+        default {
+            Write-Host '  Неверный выбор.' -ForegroundColor Red
+            Start-Sleep -Seconds 2
+            return
+        }
+    }
+
+    if ($logs.Count -eq 0) {
+        Write-Host '  Нет журналов для очистки.' -ForegroundColor Yellow
+        Read-Host 'Нажмите ENTER для возврата в меню'
+        return
+    }
+
+    Write-Host ''
+    Write-Host ("  Будет очищено журналов: {0}" -f $logs.Count) -ForegroundColor Yellow
+    if ($logs.Count -le 15) {
+        foreach ($l in $logs) { Write-Host ("    - {0}" -f $l) -ForegroundColor DarkGray }
+    } else {
+        foreach ($l in ($logs | Select-Object -First 10)) { Write-Host ("    - {0}" -f $l) -ForegroundColor DarkGray }
+        Write-Host ("    ... и ещё {0}" -f ($logs.Count - 10)) -ForegroundColor DarkGray
+    }
+    Write-Host ''
+    $confirm = Read-Host 'Для подтверждения введите ДА'
+
+    if ($confirm -ne 'ДА' -and $confirm -ne 'да' -and $confirm -ne 'Да') {
+        Write-Host '  Отменено.' -ForegroundColor DarkYellow
+        Start-Sleep -Seconds 2
+        return
+    }
+
+    Write-Host ''
+    Write-Host '  Очистка...' -ForegroundColor Cyan
+    $ok = 0
+    $fail = 0
+    foreach ($l in $logs) {
+        if (Clear-OneEventLog -LogName $l) { $ok++ } else { $fail++ }
+    }
+
+    Write-Host ''
+    Write-Host ("  Готово. Успешно: {0}, ошибок: {1}" -f $ok, $fail) -ForegroundColor $(if ($fail -eq 0) { 'Green' } else { 'Yellow' })
+    Write-Host '  Можно снова запустить диагностику — журнал будет «с чистого листа».' -ForegroundColor DarkGray
+    Write-Host ''
+    Read-Host 'Нажмите ENTER для возврата в меню'
+}
+
+function Invoke-Diagnostics {
+    Reset-DiagnosticsState
+    Clear-Host
+    Write-Header 'АВТОМАТИЧЕСКИЙ АНАЛИЗАТОР ЖЕЛЕЗА И СБОЕВ WINDOWS'
+    Write-ReportLine ("  Дата анализа: {0:dd.MM.yyyy HH:mm:ss}" -f (Get-Date)) DarkGray
+    Write-ReportLine ("  Каталог скрипта: {0}" -f $PSScriptRoot) DarkGray
+    Write-ReportLine ("  Файл отчёта: {0}" -f $Script:ReportPath) DarkGray
+    Write-ReportLine ("  Окно корреляции событий: ±{0} мин вокруг критичных" -f $Script:WindowMinutes) DarkGray
+    Write-ReportLine '  Режим: только неисправности (обновления/DCOM/DNS и шум скрыты)' DarkGray
+
+    if (-not (Test-IsAdmin)) {
+        Write-ReportLine ''
+        Write-ReportLine '  ВНИМАНИЕ: скрипт запущен без прав администратора.' Red
+        Write-ReportLine '  Часть журналов и устройств может быть недоступна. Запустите Start-WinErrorParser.bat от имени администратора.' DarkYellow
+    } else {
+        Write-ReportLine '  Права: администратор — OK' Green
+    }
+
+    Show-SystemInfo
+    Show-DiskHealth
+    Show-MemoryStatus
+    Show-Whea
+    Show-KernelPower
+    Show-BugChecks
+    Show-DiskEvents
+    Show-GpuAndResource
+    Show-TopSystemErrors
+    Show-DeviceProblems
+    Show-AnalysisAndRecommendations
+    Show-Summary
+
+    Write-ReportLine ''
+    Write-ReportLine ('=' * 72) Cyan
+    Write-ReportLine '  Готово. Отчёт выведен на экран и сохранён в WinErrorParser_Report_RU.txt' Cyan
+    Write-ReportLine ('=' * 72) Cyan
+
+    try {
+        [System.IO.File]::WriteAllText($Script:ReportPath, $Script:Report.ToString(), [System.Text.UTF8Encoding]::new($true))
+    } catch {
+        Write-Host ("Не удалось сохранить отчёт: {0}" -f $_.Exception.Message) -ForegroundColor Red
+    }
+
+    Write-Host ''
+    try {
+        Read-Host 'Нажмите ENTER для возврата в меню'
+    } catch {
+        Start-Sleep -Seconds 3
+    }
+}
+
+function Show-MainMenu {
+    while ($true) {
+        Clear-Host
+        Write-Host ''
+        Write-Host ('=' * 72) -ForegroundColor Cyan
+        Write-Host '  WinErrorParser — меню' -ForegroundColor Cyan
+        Write-Host ('=' * 72) -ForegroundColor Cyan
+        Write-Host ''
+        if (Test-IsAdmin) {
+            Write-Host '  Права: администратор — OK' -ForegroundColor Green
+        } else {
+            Write-Host '  Права: нет администратора (очистка журналов и часть диагностики недоступны)' -ForegroundColor Yellow
+        }
+        Write-Host ''
+        Write-Host '  1. Диагностика ПК (журнал + железо)'
+        Write-Host '  2. Очистка журналов событий'
+        Write-Host '  0. Выход'
+        Write-Host ''
+        $choice = Read-Host 'Выберите пункт'
+
+        switch ($choice) {
+            '1' { Invoke-Diagnostics }
+            '2' { Invoke-ClearEventLogs }
+            '0' { return }
+            default {
+                Write-Host '  Неверный выбор.' -ForegroundColor Red
+                Start-Sleep -Seconds 1
+            }
+        }
+    }
+}
+
 # ---------------------------------------------------------------------------
 # Главный поток
 # ---------------------------------------------------------------------------
-Clear-Host
-Write-Header 'АВТОМАТИЧЕСКИЙ АНАЛИЗАТОР ЖЕЛЕЗА И СБОЕВ WINDOWS'
-Write-ReportLine ("  Дата анализа: {0:dd.MM.yyyy HH:mm:ss}" -f (Get-Date)) DarkGray
-Write-ReportLine ("  Каталог скрипта: {0}" -f $PSScriptRoot) DarkGray
-Write-ReportLine ("  Файл отчёта: {0}" -f $Script:ReportPath) DarkGray
-Write-ReportLine ("  Окно корреляции событий: ±{0} мин вокруг критичных" -f $Script:WindowMinutes) DarkGray
-Write-ReportLine '  Режим: только неисправности (обновления/DCOM/DNS и шум скрыты)' DarkGray
-
-if (-not (Test-IsAdmin)) {
-    Write-ReportLine ''
-    Write-ReportLine '  ВНИМАНИЕ: скрипт запущен без прав администратора.' Red
-    Write-ReportLine '  Часть журналов и устройств может быть недоступна. Запустите Start-WinErrorParser.bat от имени администратора.' DarkYellow
-} else {
-    Write-ReportLine '  Права: администратор — OK' Green
-}
-
-Show-SystemInfo
-Show-DiskHealth
-Show-MemoryStatus
-Show-Whea
-Show-KernelPower
-Show-BugChecks
-Show-DiskEvents
-Show-GpuAndResource
-Show-TopSystemErrors
-Show-DeviceProblems
-Show-AnalysisAndRecommendations
-Show-Summary
-
-Write-ReportLine ''
-Write-ReportLine ('=' * 72) Cyan
-Write-ReportLine '  Готово. Отчёт выведен на экран и сохранён в WinErrorParser_Report_RU.txt' Cyan
-Write-ReportLine ('=' * 72) Cyan
-
-try {
-    [System.IO.File]::WriteAllText($Script:ReportPath, $Script:Report.ToString(), [System.Text.UTF8Encoding]::new($true))
-} catch {
-    Write-Host ("Не удалось сохранить отчёт: {0}" -f $_.Exception.Message) -ForegroundColor Red
-}
-
-Write-Host ''
-try {
-    Read-Host 'Нажмите ENTER для выхода'
-} catch {
-    Start-Sleep -Seconds 3
-}
+Show-MainMenu
