@@ -2219,27 +2219,43 @@ function Export-HtmlReport {
 <style>
 :root{--bg:#0b1020;--card:#121826;--line:#1e293b;--text:#e8eef7;--muted:#8b98a5;--accent:#38bdf8}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(1200px 500px at 10% -10%,rgba(29,78,216,.33),transparent),var(--bg);color:var(--text);font-family:"Segoe UI",Calibri,system-ui,sans-serif}
-header{padding:28px 32px 20px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(15,23,42,.80),rgba(30,27,75,.40))}
-header h1{margin:0 0 6px;font-size:28px;letter-spacing:.2px}
+body{margin:0;background:radial-gradient(1100px 480px at 8% -12%,rgba(29,78,216,.28),transparent),var(--bg);color:var(--text);font-family:"Segoe UI",Calibri,system-ui,sans-serif}
+header{padding:26px 32px 18px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(15,23,42,.88),rgba(30,27,75,.35))}
+header h1{margin:0 0 6px;font-size:30px;letter-spacing:.2px;font-weight:750}
 .meta{color:var(--muted);font-size:13px}
-nav{display:flex;gap:8px;padding:14px 32px;position:sticky;top:0;background:rgba(11,16,32,.93);z-index:5;border-bottom:1px solid var(--line)}
-nav button{background:#1e293b;color:#e2e8f0;border:0;border-radius:999px;padding:8px 14px;cursor:pointer;font-weight:600}
+nav{display:flex;gap:8px;padding:12px 32px;position:sticky;top:0;background:rgba(11,16,32,.94);z-index:5;border-bottom:1px solid var(--line)}
+nav button{background:#1e293b;color:#e2e8f0;border:0;border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:700}
 nav button.active{background:#2563eb;color:#fff}
-main{padding:22px 32px 56px;max-width:1200px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:0 0 18px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
-.card .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}
-.card .n{font-size:28px;font-weight:750;margin-top:4px}
-.verdict{border-radius:18px;padding:18px 20px;margin:0 0 20px;border:1px solid var(--line)}
+main{padding:22px 32px 56px;max-width:1120px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:92px;width:100%;color:inherit;font:inherit;text-align:left}
+button.card.click{cursor:pointer}
+button.card.click:hover{border-color:#38bdf8;transform:translateY(-1px);background:#162033}
+.card.dead{opacity:.72;cursor:default}
+.card .k{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.card .n{font-size:32px;font-weight:800;margin-top:4px;line-height:1}
+.ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:0 0 42px}
+.ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ico-blue{background:rgba(37,99,235,.18);color:#60a5fa}
+.ico-red{background:rgba(244,63,94,.16);color:#fb7185}
+.ico-cyan{background:rgba(14,165,233,.16);color:#38bdf8}
+.ico-violet{background:rgba(167,139,250,.16);color:#a78bfa}
+.verdict{border-radius:18px;padding:18px 20px;margin:0 0 18px;border:1px solid var(--line);display:flex;gap:14px;align-items:flex-start}
+.verdict .v-ico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:0 0 40px}
+.verdict .v-ico svg{width:22px;height:22px}
 .verdict.ok{background:#052e1a;border-color:#14532d}
-.verdict.warn{background:#3b2a08;border-color:#854d0e}
+.verdict.ok .v-ico{background:rgba(34,197,94,.18);color:#4ade80}
+.verdict.warn{background:#3b2a08;border-color:#b45309}
+.verdict.warn .v-ico{background:rgba(245,158,11,.2);color:#fbbf24}
 .verdict.bad{background:#3f1219;border-color:#9f1239}
-.verdict h2{margin:0 0 8px;font-size:15px;color:#cbd5e1}
-.verdict p{margin:0;font-size:18px;line-height:1.45}
+.verdict.bad .v-ico{background:rgba(244,63,94,.2);color:#fb7185}
+.verdict h2{margin:0 0 6px;font-size:13px;color:#fbbf24;font-weight:700}
+.verdict.ok h2{color:#86efac}
+.verdict.bad h2{color:#fda4af}
+.verdict p{margin:0;font-size:18px;line-height:1.4;font-weight:600}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 18px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
-.panel h3{margin:0 0 12px;font-size:16px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.panel h3{margin:0 0 14px;font-size:16px}
 .chart-svg{width:100%;height:auto;display:block}
 .legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px;font-size:13px;color:#cbd5e1}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
@@ -2247,8 +2263,13 @@ main{padding:22px 32px 56px;max-width:1200px}
 .timeline li{display:grid;grid-template-columns:140px 12px 1fr;gap:10px;padding:8px 0}
 .timeline .t{color:#94a3b8;font-size:13px}
 .timeline .mark{width:10px;height:10px;border-radius:50%;margin-top:5px}
-.disks{display:flex;flex-wrap:wrap;gap:10px}
-.chip{background:#0f172a;border:1px solid #334155;border-radius:12px;padding:10px 12px;min-width:220px}
+.disks{display:flex;flex-direction:column;gap:10px}
+.chip{background:#0f172a;border:1px solid #334155;border-radius:14px;padding:12px 14px}
+.chip-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.chip-top b{font-size:14px}
+.tag{background:#2563eb;color:#fff;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:700}
+.chip-name{font-size:14px;color:#e2e8f0}
+.chip-sub{color:#94a3b8;font-size:12px;margin-top:3px}
 .score{display:flex;align-items:center;gap:16px}
 .score-ring{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--sc) calc(var(--p)*1%),#1e293b 0);position:relative}
 .score-ring:after{content:"";position:absolute;inset:10px;border-radius:50%;background:#121826}
@@ -2257,42 +2278,60 @@ main{padding:22px 32px 56px;max-width:1200px}
 .line{white-space:pre-wrap;word-break:break-word;line-height:1.45;font-family:Consolas,"Cascadia Mono",monospace;font-size:12.5px}
 .search{width:100%;margin:0 0 10px;padding:10px 12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#fff}
 .kv{width:100%;border-collapse:collapse;font-size:14px}
-.kv th{text-align:left;color:#94a3b8;font-weight:600;padding:7px 12px 7px 0;width:38%;vertical-align:top}
-.kv td{padding:7px 0;color:#f1f5f9}
-.bar{height:10px;background:#1e293b;border-radius:99px;overflow:hidden;margin-top:6px}
+.kv th{text-align:left;color:#94a3b8;font-weight:600;padding:8px 12px 8px 0;width:34%;vertical-align:top}
+.kv td{padding:8px 0;color:#f1f5f9}
+.bar{height:8px;background:#1e293b;border-radius:99px;overflow:hidden;margin-top:6px}
 .bar>i{display:block;height:100%;border-radius:99px}
-.hw-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin:0 0 18px}
+.hw-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin:0 0 18px}
 .hidden{display:none}
 footer{color:#64748b;padding:8px 32px 28px;font-size:12px}
-.jumps{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
-.jumps a{color:#7dd3fc;text-decoration:none;background:#0f172a;border:1px solid #334155;border-radius:999px;padding:6px 12px;font-size:13px}
+.jumps{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+.jumps a{color:#93c5fd;text-decoration:none;background:#0f172a;border:1px solid #334155;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600}
 .jumps a:hover{border-color:#38bdf8}
-@media(max-width:860px){.grid,.hw-grid{grid-template-columns:1fr}header,main,nav,footer{padding-left:16px;padding-right:16px}}
+@media(max-width:860px){.grid,.hw-grid,.cards{grid-template-columns:1fr 1fr}header,main,nav,footer{padding-left:16px;padding-right:16px}}
+@media(max-width:560px){.cards,.grid,.hw-grid{grid-template-columns:1fr}}
 </style></head><body>
 '@)
+    $icoWarn = '<svg viewBox="0 0 24 24"><path d="M12 3l10 18H2L12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9v5M12 17.5h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+    $icoOk = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" /><path d="M8 12.5l2.5 2.5L16 9"/></svg>'
+    $icoSearch = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/></svg>'
+    $icoZap = '<svg viewBox="0 0 24 24"><path d="M13 3L4 14h7l-1 7 10-12h-7l0-6z" fill="currentColor" stroke="none"/></svg>'
+    $icoDisk = '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 4v6h8V4M9 16h6"/></svg>'
+    $icoChip = '<svg viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M9 3v4M15 3v4M9 17v4M15 17v4M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>'
+    $vIco = $icoWarn
+    if ($verdictTone -eq 'ok') { $vIco = $icoOk }
+
     [void]$sb.AppendLine(('<header><h1>WinErrorParser {0}</h1><div class="meta">{1} · {2} · {3} {4} {5}</div></header>' -f $Script:Version, (Escape-HtmlText $pcName), (Escape-HtmlText $pcModel), (L 'период' 'period'), $Script:DaysBack, (L 'дн.' 'days')))
     [void]$sb.AppendLine(('<nav><button class="active" data-tab="dash">{0}</button><button data-tab="log">{1}</button></nav>' -f (Escape-HtmlText (L 'Обзор' 'Overview')), (Escape-HtmlText (L 'Полный лог' 'Full log'))))
     [void]$sb.AppendLine('<main>')
     [void]$sb.AppendLine('<section id="tab-dash">')
-    [void]$sb.AppendLine(('<div class="verdict {0}" id="verdict"><h2>{1}</h2><p>{2}</p></div>' -f $verdictTone, (Escape-HtmlText (L 'Краткий вердикт' 'Quick verdict')), (Escape-HtmlText $v.Text)))
-    [void]$sb.AppendLine(('<div class="jumps"><a href="#verdict">{0}</a><a href="#freq">{1}</a><a href="#compare">{2}</a><a href="#sys">{3}</a><a href="#bat">{4}</a><a href="#disks">{5}</a><a href="#timeline">{6}</a></div>' -f (Escape-HtmlText (L 'Вердикт' 'Verdict')), (Escape-HtmlText (L 'Частота' 'Frequency')), (Escape-HtmlText (L 'Сравнение' 'Compare')), (Escape-HtmlText (L 'Система' 'System')), (Escape-HtmlText (L 'Батарея' 'Battery')), (Escape-HtmlText (L 'Диски' 'Disks')), (Escape-HtmlText (L 'Лента' 'Timeline'))))
+    [void]$sb.AppendLine(('<div class="verdict {0}" id="verdict"><div class="v-ico">{1}</div><div><h2>{2}</h2><p>{3}</p></div></div>' -f $verdictTone, $vIco, (Escape-HtmlText (L 'Краткий вердикт' 'Quick verdict')), (Escape-HtmlText $v.Text)))
+    [void]$sb.AppendLine(('<div class="jumps"><a href="#verdict">{0}</a><a href="#sys">{1}</a><a href="#disks">{2}</a><a href="#freq">{3}</a><a href="#compare">{4}</a><a href="#timeline">{5}</a></div>' -f (Escape-HtmlText (L 'Вердикт' 'Verdict')), (Escape-HtmlText (L 'Система' 'System')), (Escape-HtmlText (L 'Диски' 'Disks')), (Escape-HtmlText (L 'Частота' 'Frequency')), (Escape-HtmlText (L 'Сравнение' 'Compare')), (Escape-HtmlText (L 'Лента' 'Timeline'))))
+
+    $cardFacts = if ($findings.Count -gt 0) { 'click' } else { 'dead' }
+    $cardKp    = if ($kp -gt 0) { 'click' } else { 'dead' }
+    $cardDisk  = if ($disk -gt 0) { 'click' } else { 'dead' }
+    $cardWhea  = if ($whea -gt 0) { 'click' } else { 'dead' }
+    $filterFacts = 'Kernel-Power|WHEA|BugCheck|BSOD|диск|disk |NTFS|volmgr|stornvme|6008|внезапн'
+    $filterKp    = 'Kernel-Power'
+    $filterDisk  = 'диск|disk |NTFS|volmgr|stornvme|SMART|накопител|тома'
+    $filterWhea  = 'WHEA'
+    [void]$sb.AppendLine('<div class="cards">')
+    [void]$sb.AppendLine(('<button type="button" class="card {0}" data-count="{1}" data-filter="{2}" title="{3}"><div><div class="k">{4}</div><div class="n">{1}</div></div><div class="ico ico-blue">{5}</div></button>' -f $cardFacts, $findings.Count, (Escape-HtmlText $filterFacts), (Escape-HtmlText (L 'Открыть факты в полном логе' 'Open findings in the full log')), (Escape-HtmlText (L 'Фактов' 'Findings')), $icoSearch))
+    [void]$sb.AppendLine(('<button type="button" class="card {0}" data-count="{1}" data-filter="{2}" title="{3}"><div><div class="k">Kernel-Power 41</div><div class="n">{1}</div></div><div class="ico ico-red">{4}</div></button>' -f $cardKp, $kp, (Escape-HtmlText $filterKp), (Escape-HtmlText (L 'Показать Kernel-Power 41 в логе' 'Show Kernel-Power 41 in the log')), $icoZap))
+    [void]$sb.AppendLine(('<button type="button" class="card {0}" data-count="{1}" data-filter="{2}" title="{3}"><div><div class="k">{4}</div><div class="n">{1}</div></div><div class="ico ico-cyan">{5}</div></button>' -f $cardDisk, $disk, (Escape-HtmlText $filterDisk), (Escape-HtmlText (L 'Показать ошибки диска в логе' 'Show disk errors in the log')), (Escape-HtmlText (L 'Диск' 'Disk')), $icoDisk))
+    [void]$sb.AppendLine(('<button type="button" class="card {0}" data-count="{1}" data-filter="{2}" title="{3}"><div><div class="k">WHEA</div><div class="n">{1}</div></div><div class="ico ico-violet">{4}</div></button>' -f $cardWhea, $whea, (Escape-HtmlText $filterWhea), (Escape-HtmlText (L 'Показать WHEA в логе' 'Show WHEA in the log')), $icoChip))
+    [void]$sb.AppendLine('</div>')
 
     [void]$sb.AppendLine('<div class="hw-grid">')
     [void]$sb.AppendLine(('<div class="panel" id="sys"><h3>{0}</h3><table class="kv">' -f (Escape-HtmlText (L 'Сведения о системе' 'System information'))))
     $sysRows = @(
-        @{ K = (L 'Компьютер' 'Computer'); V = $inv.Sys.Computer }
         @{ K = (L 'ОС' 'OS'); V = $inv.Sys.OS }
-        @{ K = (L 'Версия / сборка' 'Version / build'); V = $inv.Sys.Build }
-        @{ K = (L 'Производитель / модель' 'Manufacturer / model'); V = $inv.Sys.Model }
         @{ K = (L 'Процессор' 'CPU'); V = $inv.Sys.CPU }
-        @{ K = (L 'ОЗУ установлено' 'RAM installed'); V = $inv.Sys.RamTotal }
-        @{ K = (L 'ОЗУ свободно' 'RAM free'); V = $inv.Sys.RamFree }
+        @{ K = (L 'ОЗУ' 'RAM'); V = $(if ($inv.Sys.RamTotal -and $inv.Sys.RamFree) { '{0} · {1} {2}' -f $inv.Sys.RamTotal, $inv.Sys.RamFree, (L 'свободно' 'free') } else { $inv.Sys.RamTotal }) }
         @{ K = 'BIOS'; V = $inv.Sys.BIOS }
+        @{ K = (L 'Версия / сборка' 'Version / build'); V = $inv.Sys.Build }
         @{ K = (L 'Время работы' 'Uptime'); V = $inv.Sys.Uptime }
-        @{ K = (L 'Последняя загрузка' 'Last boot'); V = $inv.Sys.LastBoot }
-        @{ K = (L 'Дампы BSOD' 'BSOD dumps'); V = (Get-DumpEnabledLabel $Script:DumpEnabled) }
-        @{ K = (L 'Fast Startup' 'Fast Startup'); V = $(if ($Script:FastStartup -eq 1) { L 'включён' 'on' } elseif ($Script:FastStartup -eq 0) { L 'выключен' 'off' } else { '' }) }
-        @{ K = (L 'Ожидание перезагрузки' 'Pending reboot'); V = $(if ($Script:PendingReboot) { L 'да' 'yes' } else { '' }) }
     )
     foreach ($row in $sysRows) {
         if ([string]::IsNullOrWhiteSpace([string]$row.V)) { continue }
@@ -2309,14 +2348,55 @@ footer{color:#64748b;padding:8px 32px 28px;font-size:12px}
     }
     [void]$sb.AppendLine('</table></div>')
 
-    [void]$sb.AppendLine(('<div class="panel" id="bat"><h3>{0}</h3>' -f (Escape-HtmlText (L 'Батарея' 'Battery'))))
+    [void]$sb.AppendLine(('<div class="panel" id="disks"><h3>{0}</h3><div class="disks">' -f (Escape-HtmlText (L 'Диски и тома' 'Disks and volumes'))))
+    $diskChips = 0
+    if ($Script:DiskByNumber -and $Script:DiskByNumber.Count -gt 0) {
+        foreach ($k in ($Script:DiskByNumber.Keys | Sort-Object)) {
+            $info = $Script:DiskByNumber[$k]
+            $tagsHtml = ''
+            if ($info.Letters) {
+                foreach ($let in @(($info.Letters -split '[,; ]+') | Where-Object { $_ })) {
+                    $tagsHtml += ('<span class="tag">{0}</span>' -f (Escape-HtmlText $let))
+                }
+            }
+            $sub = ('{0:N1} {1}' -f $info.SizeGB, (L 'ГБ' 'GB'))
+            [void]$sb.AppendLine(('<div class="chip"><div class="chip-top"><b>Disk {0}</b><span>{1}</span></div><div class="chip-name">{2}</div><div class="chip-sub">{3}</div></div>' -f $info.Number, $tagsHtml, (Escape-HtmlText $info.Model), (Escape-HtmlText $sub)))
+            $diskChips++
+        }
+    }
+    if ($diskChips -eq 0) {
+        [void]$sb.AppendLine(('<p style="color:#8b98a5;margin:0">{0}</p>' -f (Escape-HtmlText (L 'Карта дисков пуста.' 'Disk map is empty.'))))
+    }
+    $htmlDisks = @()
+    if ($null -ne $inv.Disks) { $htmlDisks = $inv.Disks }
+    if ($htmlDisks.Count -gt 0) {
+        [void]$sb.AppendLine('<table class="kv" style="margin-top:12px">')
+        foreach ($d in $htmlDisks) {
+            $health = switch ($d.Health) {
+                'Healthy'   { L 'норма' 'healthy' }
+                'Warning'   { L 'предупреждение' 'warning' }
+                'Unhealthy' { L 'неисправен' 'unhealthy' }
+                default     { $d.Health }
+            }
+            $extra = @()
+            if ($null -ne $d.Temp) { $extra += ('{0} {1}°C' -f (L 'темп.' 'temp'), $d.Temp) }
+            if ($null -ne $d.Wear) { $extra += ('{0} {1}%' -f (L 'износ' 'wear'), $d.Wear) }
+            $tail = ''
+            if ($extra.Count -gt 0) { $tail = ' · ' + ($extra -join ' · ') }
+            [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1} · {2}{3}</td></tr>' -f (Escape-HtmlText $d.Name), (Escape-HtmlText $health), ('{0:N1} {1}' -f $d.SizeGB, (L 'ГБ' 'GB')), (Escape-HtmlText $tail)))
+        }
+        [void]$sb.AppendLine('</table>')
+    }
+    [void]$sb.AppendLine('</div></div></div>')
+
+    [void]$sb.AppendLine(('<div class="panel" id="bat" style="margin-bottom:18px"><h3>{0}</h3>' -f (Escape-HtmlText (L 'Батарея' 'Battery'))))
     if ($inv.Plan) {
         [void]$sb.AppendLine(('<p style="color:#94a3b8;margin:0 0 10px">{0}: {1}</p>' -f (Escape-HtmlText (L 'План питания' 'Power plan')), (Escape-HtmlText $inv.Plan)))
     }
     $htmlBats = @()
     if ($null -ne $inv.Battery) { $htmlBats = $inv.Battery }
     if ($htmlBats.Count -eq 0) {
-        [void]$sb.AppendLine(('<p style="color:#8b98a5">{0}</p>' -f (Escape-HtmlText (L 'Батарея не обнаружена (настольный ПК).' 'No battery found (desktop PC).'))))
+        [void]$sb.AppendLine(('<p style="color:#8b98a5;margin:0">{0}</p>' -f (Escape-HtmlText (L 'Батарея не обнаружена (настольный ПК).' 'No battery found (desktop PC).'))))
     } else {
         foreach ($b in $htmlBats) {
             [void]$sb.AppendLine('<table class="kv">')
@@ -2325,37 +2405,16 @@ footer{color:#64748b;padding:8px 32px 28px;font-size:12px}
                 $cc = '#22c55e'; if ($b.Charge -le 20) { $cc = '#ef4444' } elseif ($b.Charge -le 40) { $cc = '#f59e0b' }
                 [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1}%<div class="bar"><i style="width:{1}%;background:{2}"></i></div></td></tr>' -f (Escape-HtmlText (L 'Текущий заряд' 'Charge now')), $b.Charge, $cc))
             }
-            if ($b.Design) {
-                [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1} mWh ({2:N1} Wh)</td></tr>' -f (Escape-HtmlText (L 'Проектная ёмкость (новая)' 'Design capacity (new)')), [int]$b.Design, ($b.Design / 1000.0)))
-            }
-            if ($b.Full) {
-                [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1} mWh ({2:N1} Wh)</td></tr>' -f (Escape-HtmlText (L 'Фактическая ёмкость сейчас' 'Full-charge capacity now')), [int]$b.Full, ($b.Full / 1000.0)))
-            }
-            if ($b.Remain) {
-                [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1} mWh ({2:N1} Wh)</td></tr>' -f (Escape-HtmlText (L 'Осталось в данный момент' 'Remaining right now')), [int]$b.Remain, ($b.Remain / 1000.0)))
-            }
             if ($null -ne $b.Health) {
                 $hc = '#22c55e'; if ($b.Health -lt 60) { $hc = '#ef4444' } elseif ($b.Health -lt 80) { $hc = '#f59e0b' }
-                $wear = [math]::Max(0, 100 - [int]$b.Health)
-                [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1}% {2} · {3} {4}%<div class="bar"><i style="width:{1}%;background:{5}"></i></div></td></tr>' -f (Escape-HtmlText (L 'Здоровье АКБ' 'Battery health')), $b.Health, (Escape-HtmlText (L 'от новой' 'of new')), $wear, (Escape-HtmlText (L 'износ' 'wear')), $hc))
+                [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1}%<div class="bar"><i style="width:{1}%;background:{2}"></i></div></td></tr>' -f (Escape-HtmlText (L 'Здоровье АКБ' 'Battery health')), $b.Health, $hc))
             }
             if ($null -ne $b.Cycles) {
                 [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1}</td></tr>' -f (Escape-HtmlText (L 'Циклы зарядки' 'Charge cycles')), $b.Cycles))
             }
-            if ($b.Volt) { [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1} V</td></tr>' -f (Escape-HtmlText (L 'Напряжение' 'Voltage')), $b.Volt)) }
-            if ($b.Status) { [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1}</td></tr>' -f (Escape-HtmlText (L 'Состояние' 'Status')), (Escape-HtmlText $b.Status))) }
             [void]$sb.AppendLine('</table>')
         }
     }
-    [void]$sb.AppendLine('</div></div>')
-
-    [void]$sb.AppendLine('<div class="cards">')
-    [void]$sb.AppendLine(('<div class="card"><div class="k">{0}</div><div class="n">{1}</div></div>' -f (Escape-HtmlText (L 'Фактов' 'Findings')), $findings.Count))
-    [void]$sb.AppendLine(('<div class="card"><div class="k">{0}</div><div class="n">{1}</div></div>' -f (Escape-HtmlText (L 'Типов проблем' 'Issue types')), @($kindGroups).Count))
-    [void]$sb.AppendLine(('<div class="card"><div class="k">Kernel-Power 41</div><div class="n">{0}</div></div>' -f $kp))
-    [void]$sb.AppendLine(('<div class="card"><div class="k">BSOD</div><div class="n">{0}</div></div>' -f $bsod))
-    [void]$sb.AppendLine(('<div class="card"><div class="k">{0}</div><div class="n">{1}</div></div>' -f (Escape-HtmlText (L 'Диск' 'Disk')), $disk))
-    [void]$sb.AppendLine(('<div class="card"><div class="k">WHEA</div><div class="n">{0}</div></div>' -f $whea))
     [void]$sb.AppendLine('</div>')
 
     [void]$sb.AppendLine('<div class="grid">')
@@ -2376,47 +2435,6 @@ footer{color:#64748b;padding:8px 32px 28px;font-size:12px}
         [void]$sb.AppendLine(('<div class="panel"><h3>{0}</h3>{1}</div>' -f (Escape-HtmlText (L 'Топ типов' 'Top types')), (New-SvgHBars -Labels $kindLabels -Values $kindValues -Colors $kindColors)))
     } else {
         [void]$sb.AppendLine(('<div class="panel"><h3>{0}</h3><p style="color:#8b98a5">{1}</p></div>' -f (Escape-HtmlText (L 'Топ типов' 'Top types')), (Escape-HtmlText (L 'Критических типов нет.' 'No critical types.'))))
-    }
-    [void]$sb.AppendLine('</div>')
-
-    [void]$sb.AppendLine(('<div class="panel" id="disks" style="margin-bottom:18px"><h3>{0}</h3>' -f (Escape-HtmlText (L 'Диски и тома' 'Disks and volumes'))))
-    if ($Script:DiskByNumber -and $Script:DiskByNumber.Count -gt 0) {
-        [void]$sb.AppendLine('<div class="disks">')
-        foreach ($k in ($Script:DiskByNumber.Keys | Sort-Object)) {
-            $info = $Script:DiskByNumber[$k]
-            [void]$sb.Append(('<div class="chip"><b>Disk {0}</b><div>{1}</div><div style="color:#94a3b8;font-size:12px">{2} · {3:N1} {4}</div></div>' -f $info.Number, (Escape-HtmlText $info.Model), (Escape-HtmlText $info.Letters), $info.SizeGB, (Escape-HtmlText (L 'ГБ' 'GB'))))
-        }
-        [void]$sb.AppendLine('</div>')
-    }
-    $htmlDisks = @()
-    if ($null -ne $inv.Disks) { $htmlDisks = $inv.Disks }
-    if ($htmlDisks.Count -gt 0) {
-        [void]$sb.AppendLine('<table class="kv" style="margin-top:12px">')
-        foreach ($d in $htmlDisks) {
-            $health = switch ($d.Health) {
-                'Healthy'   { L 'норма' 'healthy' }
-                'Warning'   { L 'предупреждение' 'warning' }
-                'Unhealthy' { L 'неисправен' 'unhealthy' }
-                default     { $d.Health }
-            }
-            $extra = @()
-            if ($null -ne $d.Temp) { $extra += ('{0} {1}°C' -f (L 'темп.' 'temp'), $d.Temp) }
-            if ($null -ne $d.Wear) { $extra += ('{0} {1}%' -f (L 'износ' 'wear'), $d.Wear) }
-            $tail = ''
-            if ($extra.Count -gt 0) { $tail = ' · ' + ($extra -join ' · ') }
-            [void]$sb.AppendLine(('<tr><th>{0}</th><td>{1} {2}, {3:N1} {4} · {5}{6}</td></tr>' -f (Escape-HtmlText $d.Name), (Escape-HtmlText $d.Bus), (Escape-HtmlText $d.Media), $d.SizeGB, (Escape-HtmlText (L 'ГБ' 'GB')), (Escape-HtmlText $health), (Escape-HtmlText $tail)))
-        }
-        [void]$sb.AppendLine('</table>')
-    }
-    $htmlVols = @()
-    if ($null -ne $inv.Volumes) { $htmlVols = $inv.Volumes }
-    if ($htmlVols.Count -gt 0) {
-        [void]$sb.AppendLine(('<p style="color:#94a3b8;margin:14px 0 8px">{0}</p>' -f (Escape-HtmlText (L 'Свободное место на томах' 'Free space on volumes'))))
-        foreach ($vol in $htmlVols) {
-            $vc = '#22c55e'
-            if ($vol.Pct -lt 5) { $vc = '#ef4444' } elseif ($vol.Pct -lt 15) { $vc = '#f59e0b' }
-            [void]$sb.AppendLine(('<div style="margin:0 0 10px"><div>{0} [{1}] — {2} {3} {4} {5} {6} ({7}%)</div><div class="bar"><i style="width:{7}%;background:{8}"></i></div></div>' -f (Escape-HtmlText $vol.Letter), (Escape-HtmlText $vol.Fs), (Escape-HtmlText (L 'свободно' 'free')), $vol.Free, (Escape-HtmlText (L 'из' 'of')), $vol.Total, (Escape-HtmlText (L 'ГБ' 'GB')), $vol.Pct, $vc))
-        }
     }
     [void]$sb.AppendLine('</div>')
 
@@ -2492,21 +2510,35 @@ footer{color:#64748b;padding:8px 32px 28px;font-size:12px}
 <script>
 (function(){
   var buttons=document.querySelectorAll("nav button");
+  var q=document.getElementById("logFilter");
   function show(id){
     document.getElementById("tab-dash").classList.toggle("hidden", id!=="dash");
     document.getElementById("tab-log").classList.toggle("hidden", id!=="log");
     buttons.forEach(function(b){b.classList.toggle("active", b.getAttribute("data-tab")===id);});
   }
-  buttons.forEach(function(b){b.addEventListener("click", function(){show(b.getAttribute("data-tab"));});});
-  var q=document.getElementById("logFilter");
-  if(q){
-    q.addEventListener("input", function(){
-      var s=q.value.toLowerCase();
-      document.querySelectorAll("#logBox .line").forEach(function(el){
-        el.style.display=!s || el.textContent.toLowerCase().indexOf(s)>=0 ? "" : "none";
-      });
+  function applyFilter(raw){
+    var s=(raw||"").trim();
+    if(q) q.value=s.indexOf("|")>=0 ? s.split("|")[0] : s;
+    var terms=s.toLowerCase().split("|").map(function(x){return x.trim();}).filter(Boolean);
+    document.querySelectorAll("#logBox .line").forEach(function(el){
+      var t=el.textContent.toLowerCase();
+      var ok=!terms.length;
+      for(var i=0;i<terms.length && !ok;i++){ if(t.indexOf(terms[i])>=0) ok=true; }
+      el.style.display=ok?"":"none";
     });
   }
+  buttons.forEach(function(b){b.addEventListener("click", function(){show(b.getAttribute("data-tab"));});});
+  if(q){ q.addEventListener("input", function(){ applyFilter(q.value); }); }
+  document.querySelectorAll(".card.click").forEach(function(card){
+    card.addEventListener("click", function(){
+      var n=parseInt(card.getAttribute("data-count")||"0",10);
+      if(!n) return;
+      show("log");
+      applyFilter(card.getAttribute("data-filter")||"");
+      var box=document.getElementById("logBox");
+      if(box) box.scrollTop=0;
+    });
+  });
 })();
 </script></body></html>
 '@)

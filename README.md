@@ -15,53 +15,47 @@
 </p>
 
 <p align="center">
-    <b><a href="#-русская-версия">Русский</a></b>
-    ·
-    <b><a href="#-english-version">English</a></b>
+  <b><a href="#-русская-версия">Русский</a></b>
+  ·
+  <b><a href="#-english-version">English</a></b>
 </p>
 
 <p align="center">
-  <img src="docs/preview.svg" alt="WinErrorParser HTML overview preview" width="920" />
+  <img src="docs/preview.png" alt="WinErrorParser HTML overview" width="920" />
 </p>
 
 ---
 
 # 🇷🇺 Русская версия
 
-**WinErrorParser 2.1** — автономный инструмент диагностики ПК под Windows. Читает журналы событий и сведения о железе, отфильтровывает «шум», **расшифровывает BSOD** (STOP-код, модуль/процесс, типичная причина), разбирает критичные сбои (окно **±5 минут** вокруг Kernel-Power / BSOD / WHEA / диска) и пишет отчёт **на русском или английском** в терминал, `.txt` и HTML.
+**WinErrorParser 2.1** — автономный офлайн-диагност Windows. Читает журналы и железо, отбрасывает шум, **расшифровывает BSOD**, смотрит окно **±5 минут** вокруг критичных сбоев и пишет отчёт **на русском или английском**: консоль, `.txt` и HTML-дашборд.
 
-Скрипт **не требует интернета**. Диагностика только читает журналы и WMI; очистка журналов (пункт меню) меняет только Event Log и только после явного подтверждения.
+Интернет не нужен. Диагностика только читает. Очистка журналов меняет Event Log только после явного `ДА` / `YES`.
 
 ### Что нового в 2.1
 
-- Краткая **шапка** в начале TXT и якоря в HTML (вердикт → частота → сравнение → система / диски).
-- **Вес событий**: единичный сбой vs серия, первая/последняя дата.
-- **Сравнение с прошлым отчётом** в той же папке (новое / стало больше / исчезло).
-- Краши **игр и браузеров** скрыты и **не тянут вердикт** в «железо».
-- Контекст **«сломалось после обновления Windows»**.
-- Сон / Fast Startup, dirty bit / CHKDSK, отвалы USB-сети-PCIe, настройки дампа, ожидание перезагрузки, дата BIOS.
-- Меню: открыть последний HTML, список отчётов, упаковать TXT+HTML в ZIP.
+- HTML-дашборд: вердикт, карточки, система и диски.
+- Карточки **Фактов / Kernel-Power 41 / Диск / WHEA** кликабельны: если число > 0, открывается полный лог с фильтром.
+- Краткая шапка в TXT, якоря в HTML.
+- Вес событий: единичный сбой vs серия.
+- Сравнение с прошлым прогоном в той же папке.
+- Краши игр и браузеров скрыты и **не** тянут вердикт в железо.
+- Контекст «сломалось после обновления Windows».
+- Сон / Fast Startup, dirty bit / CHKDSK, USB–сеть–PCIe, дампы, дата BIOS.
+- Меню: последний HTML, список отчётов, ZIP.
 
-### Быстрый старт (RU)
+### Быстрый старт
 
-1. Скачайте `Start-WinErrorParser.bat` и `WinErrorParser.ps1` в **одну** папку.
+1. Скачайте репозиторий. `Start-WinErrorParser.bat` и `WinErrorParser.ps1` должны лежать **в одной папке**.
 2. ПКМ по `Start-WinErrorParser.bat` → **Запуск от имени администратора**.
-3. В меню выберите:
-   - **1** — диагностика ПК;
-   - **2** — очистка журналов событий;
-   - **3** — период анализа (3 / 7 / 14 / 30 / 90 дней);
-   - **4** — режим: только неисправности / полный отчёт;
-   - **5** — язык отчёта RU/EN;
-   - **6** — открыть последний HTML;
-   - **7** — последние отчёты;
-   - **8** — упаковать последний отчёт в ZIP;
-   - **0** — выход.
-4. После диагностики откройте свежий `WinErrorParser_Report_RU_YYYY-MM-DD_HHMMSS.txt` или `.html` (краткая сводка также копируется в буфер обмена).
+3. Пункт **1** — диагностика.
+4. Откройте свежий `WinErrorParser_Report_RU_YYYY-MM-DD_HHMMSS.html` или `.txt`. Краткая сводка копируется в буфер обмена.
 
-> **Кодировка файлов (важно):**
-> - `WinErrorParser.ps1` — **UTF-8 с BOM** (иначе ParserError на кириллице).
-> - `Start-WinErrorParser.bat` — **ASCII без BOM** (BOM в `.bat` закрывает окно cmd сразу).
-> Скачивайте файлы из репозитория целиком, не копируйте код в Блокнот вручную.
+> **Кодировка (важно):**
+> - `WinErrorParser.ps1` — **UTF-8 с BOM**
+> - `Start-WinErrorParser.bat` — **ASCII без BOM**
+>
+> Скачивайте файлы из репозитория целиком. Не копируйте код в Блокнот вручную.
 
 ---
 
@@ -72,24 +66,22 @@
 3. [Состав проекта](#состав-проекта)
 4. [Требования](#требования)
 5. [Запуск](#запуск)
-6. [Очистка журналов](#очистка-журналов)
-7. [Как устроен отчёт](#как-устроен-отчёт)
-8. [Разделы диагностики](#разделы-диагностики)
-9. [Расшифровка BSOD](#расшифровка-bsod)
-10. [Анализ ±5 минут](#анализ-5-минут)
-11. [Рекомендации по фактам](#рекомендации-по-фактам)
-12. [Что скрывается как шум](#что-скрывается-как-шум)
-13. [Типичные связки симптомов](#типичные-связки-симптомов)
-14. [Ошибка ParserError](#ошибка-parsererror--кракозябры)
-15. [Проверка файлов (SHA256)](#проверка-файлов-sha256)
+6. [HTML-дашборд](#html-дашборд)
+7. [Очистка журналов](#очистка-журналов)
+8. [Как устроен отчёт](#как-устроен-отчёт)
+9. [Разделы диагностики](#разделы-диагностики)
+10. [Расшифровка BSOD](#расшифровка-bsod)
+11. [Анализ ±5 минут](#анализ-5-минут)
+12. [Рекомендации по фактам](#рекомендации-по-фактам)
+13. [Что скрывается как шум](#что-скрывается-как-шум)
+14. [ParserError](#ошибка-parsererror--кракозябры)
+15. [SHA256](#проверка-файлов-sha256)
 16. [Ограничения и FAQ](#ограничения-и-faq)
-17. [English version](#-english-version)
+17. [English](#-english-version)
 
 ---
 
 ## Меню
-
-После запуска появляется меню:
 
 ```text
 1. Диагностика ПК (журнал + железо)
@@ -103,7 +95,7 @@
 0. Выход
 ```
 
-После диагностики или очистки скрипт возвращает в меню (можно сразу прогнать анализ «с чистого листа»).
+После диагностики скрипт возвращается в меню.
 
 ---
 
@@ -111,24 +103,21 @@
 
 | Возможность | Зачем |
 |-------------|--------|
-| Меню диагностики / очистки / настроек | Один bat: период, язык, полный отчёт, архив |
-| Отчёт RU/EN (консоль + `.txt` + HTML) | Понятные пояснения; архив с датой в имени |
-| Краткая шапка + якоря HTML | Вердикт и вес событий сразу наверху |
-| Частота событий | Единичный vs серия, первое/последнее |
-| Сравнение с прошлым прогоном | Что появилось, усилилось или исчезло |
-| Расшифровка BSOD | STOP-код, имя, модуль/процесс, вероятная область |
-| Фильтр шума или полный режим | Update / DCOM / DNS скрыты; SCM только при частых падениях |
-| Краши игр/браузеров | Скрыты, **не** влияют на вердикт железа |
+| Меню + bat от администратора | Период, язык, архив, очистка журналов |
+| Отчёт RU/EN: консоль, TXT, HTML | Понятные пояснения, файлы с датой в имени |
+| HTML-дашборд | Вердикт, карточки, система, диски; клик по карточке открывает лог |
+| Вес событий | Единичный vs серия, первое и последнее время |
+| Сравнение с прошлым прогоном | Новое / стало больше / исчезло |
+| Расшифровка BSOD | STOP-код, модуль/процесс, вероятная область |
+| Фильтр шума | Update / DCOM / DNS скрыты; игры не влияют на вердикт |
 | Корреляция ±5 мин | System + Application + Setup вокруг критичных событий |
-| Система / диски / SMART / RAM | Модель, тома, `PhysicalDisk`, счётчики надёжности |
-| WHEA, Kernel-Power 41, EventLog 6008 | Железо, внезапные перезагрузки, неожиданный shutdown |
-| Сон / Fast Startup / дампы | 41 после сна, быстрый запуск, включены ли минидампы |
-| Dirty bit / CHKDSK | Том закрыли нечисто |
-| USB / сеть / PCIe | Отвалы шины, не только диск |
-| Контекст обновления Windows | «Сломалось после патча?» |
-| Очистка Event Log | Сначала экспорт `.evtx`; «все журналы» спрятаны |
+| Диски / SMART / RAM | Имена томов, здоровье Windows, модули памяти |
+| WHEA, Kernel-Power 41, 6008 | Железо, внезапные перезагрузки |
+| Сон, Fast Startup, дампы | 41 после сна, включены ли минидампы |
+| Dirty bit / USB / PCIe | Том закрыли нечисто, отвал шины |
+| Очистка Event Log | Сначала `.evtx`, «все журналы» спрятаны |
 
-Цвета: **зелёный** — чисто; **жёлтый** — внимание; **красный** — критично.
+Цвета в консоли: **зелёный** — чисто, **жёлтый** — внимание, **красный** — критично.
 
 ---
 
@@ -136,44 +125,34 @@
 
 | Файл | Роль |
 |------|------|
-| `Start-WinErrorParser.bat` | Запуск (ASCII, **без BOM**), UAC, проверка BOM у `.ps1` |
-| `WinErrorParser.ps1` | Меню, диагностика, очистка журналов (**UTF-8 с BOM**), версия 2.1 |
+| `Start-WinErrorParser.bat` | Запуск, UAC, проверка BOM у `.ps1` (ASCII **без BOM**) |
+| `WinErrorParser.ps1` | Диагностика и «меню» (UTF-8 **с BOM**), v2.1 |
 | `LICENSE` | MIT |
-| `docs/preview.svg` | Превью HTML-дашборда для GitHub |
-| `WinErrorParser_Report_RU_дата.txt` + `.html` | Два файла на запуск (не коммитятся) |
-| `examples/sample_report.txt` | Синтетический пример отчёта |
-| `README.md` | Это руководство (RU + EN) |
+| `docs/preview.png` | Превью HTML для GitHub |
+| `examples/sample_report.txt` | Синтетический фрагмент TXT |
+| `README.md` | Это руководство |
 
-Живые отчёты, `WinErrorParser_LastState.json` и ZIP-архивы в git не входят.
+В git **не входят**: живые `WinErrorParser_Report_*`, `WinErrorParser_LastState.json`, ZIP и `logs_backup_*`.
 
 ---
 
 ## Требования
 
-- Windows 10 / 11 (Windows PowerShell 5.1).
-- Права **администратора** (обязательны для полной диагностики и для очистки журналов).
-- Интернет не нужен.
+- Windows 10 / 11, Windows PowerShell **5.1**
+- Права **администратора** для полной диагностики и очистки
+- Интернет не нужен
 
-Диагностика **не** меняет службы, реестр и драйверы. Очистка журналов меняет только Event Log после ввода `ДА` или `YES` (перед этим журналы сохраняются в `logs_backup_*\*.evtx`).
+Диагностика не меняет службы, реестр и драйверы.
 
 ---
 
 ## Запуск
 
-### Через bat (рекомендуется)
-
-1. `Start-WinErrorParser.bat` и `WinErrorParser.ps1` в одной папке.
-2. ПКМ → **Запуск от имени администратора** (или UAC из bat).
-3. Выберите пункт меню.
-
-### Из PowerShell
+**Через bat (рекомендуется):** оба файла в одной папке → bat от имени администратора.
 
 ```powershell
-Set-Location "C:\путь\к\папке"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\WinErrorParser.ps1"
-# Без меню, 30 дней, английский отчёт:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\WinErrorParser.ps1" -NonInteractive -DaysBack 30 -Language en -Action Diagnose
-# Полный отчёт (шум не скрыт):
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\WinErrorParser.ps1" -FullReport
 ```
 
@@ -181,158 +160,119 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\WinErrorParser.ps1" -
 
 ---
 
+## HTML-дашборд
+
+Офлайн, без CDN. Вкладки **Обзор** и **Полный лог**.
+
+- Карточки с числом > 0 можно нажать — откроется лог, отфильтрованный по теме.
+- Карточка с **0** не кликается.
+- В Обзоре: вердикт, система, диски с метками томов (`C:`, `D:`), индекс проблемности, лента.
+
+TXT начинается с краткой шапки (вердикт, вес, сравнение). HTML пишется в UTF-8 **без BOM**, чтобы браузер не ругался на кодировку.
+
+---
+
 ## Очистка журналов
 
-Пункт меню **2**. Нужны права администратора.
+Пункт **2**, нужны права администратора.
 
-Режимы:
-
-| Режим | Что очищается |
+| Режим | Что чистится |
 |-------|----------------|
 | 1 | System, Application, Setup |
 | 2 | То же + Security |
-| 3 | Все включённые журналы с записями (дольше) |
+| 3 | Все включённые журналы с записями |
 
-Подтверждение: введите **`ДА`** или **`YES`**. Режим 9 (все журналы) дополнительно требует фразу **`ОЧИСТИТЬ ВСЁ`** / **`CLEAR ALL`**. Перед очисткой журналы экспортируются в `logs_backup_*`.
+Подтверждение: **`ДА`** или **`YES`**. Полная очистка дополнительно требует **`ОЧИСТИТЬ ВСЁ`** / **`CLEAR ALL`**. Перед этим журналы сохраняются в `logs_backup_*`.
 
-Имеет смысл **сначала** сохранить отчёт диагностики, **потом** чистить журналы. После очистки диагностика увидит только новые события.
+Сначала сохраните отчёт диагностики, потом чистите журналы.
 
 ---
 
 ## Как устроен отчёт
 
 ```text
-КРАТКАЯ ШАПКА            ← вердикт, вес событий, сравнение, «после обновления»
-КРАТКИЙ ВЕРДИКТ
-Самопроверка             ← дампы, Fast Startup, ожидание reboot
-Сведения о системе       ← в т.ч. дата BIOS
-Диски и тома + SMART
-Память / температуры / батарея
-Сон / Fast Startup
-WHEA
-Kernel-Power 41 / 6008   ← ±5 мин
-BSOD                     ← STOP + модуль
-События диска, dirty bit / CHKDSK
-GPU / USB / PCIe
-Краши системных процессов (игры скрыты)
-Драйверы / обновления Windows / Reliability
-Топ источников / устройства
+КРАТКАЯ ШАПКА            ← вердикт, вес, сравнение, «после обновления»
+Самопроверка             ← дампы, Fast Startup, reboot
+Система / диски / RAM / температуры / батарея
+Сон / WHEA / Kernel-Power 41 / 6008 / BSOD
+Диск, dirty bit, GPU, USB/PCIe
+Краши только системных процессов
+Драйверы / обновления Windows
 Частота и вес / сравнение с прошлым
 АНАЛИЗ И РЕКОМЕНДАЦИИ
 СВОДКА
 ```
 
-Файлы: `WinErrorParser_Report_RU_гггг-ММ-дд_ЧЧммсс.txt` и одноимённый `.html` (UTF-8 с BOM). Третьего дубля без даты нет.
+Файлы: `WinErrorParser_Report_RU_гггг-ММ-дд_ЧЧммсс.txt` + одноимённый `.html`. Третьего дубля без даты нет.
 
 ---
 
 ## Разделы диагностики
 
-Период по умолчанию: **14 дней** (меню **3** или параметр `-DaysBack`).
+Период по умолчанию: **14 дней** (меню **3** или `-DaysBack`).
 
-1. Самопроверка — админ, дампы BSOD, Fast Startup, ожидание перезагрузки.  
-2. Система — ОС, модель, CPU, RAM, BIOS **с датой**, uptime.  
-3. Диски/тома — статус, место, `Get-PhysicalDisk`, SMART.  
-4. RAM — модули + Memory Diagnostics.  
-5. Температуры ACPI, частота CPU (троттлинг), батарея.  
-6. Сон / 41 после resume / Fast Startup.  
-7. WHEA, Kernel-Power **41**, EventLog **6008**, BSOD.  
-8. disk / NTFS / volmgr / NVMe, dirty bit, CHKDSK.  
-9. GPU и отвалы USB / сети / PCIe.  
-10. Краши только системных процессов; игры и браузеры скрыты.  
-11. Свежие драйверы и дата последнего обновления Windows.  
-12. Частота событий и сравнение с прошлым отчётом.  
-13. Анализ и рекомендации только по найденным фактам.
+1. Самопроверка — админ, дампы, Fast Startup, ожидание reboot  
+2. Система — ОС, CPU, RAM, BIOS с датой, uptime  
+3. Диски — здоровье Windows, SMART насколько отдаёт ОС, тома  
+4. RAM, температуры ACPI, частота CPU, батарея  
+5. Сон / 41 после resume  
+6. WHEA, Kernel-Power 41, EventLog 6008, BSOD  
+7. disk / NTFS / dirty bit / CHKDSK  
+8. GPU и отвалы USB / сети / PCIe  
+9. Краши системных процессов; игры скрыты  
+10. Свежие драйверы и дата обновления Windows  
+11. Частота и сравнение с прошлым отчётом  
+12. Рекомендации только по найденным фактам  
 
 ---
 
 ## Расшифровка BSOD
 
-Для каждого синего экрана скрипт старается показать:
+Скрипт показывает код (`0x000000D1`), имя (`DRIVER_IRQL_NOT_LESS_OR_EQUAL`), вероятную область и модуль/процесс из события, Kernel-Power 41 или `Report.wer`.
 
-- **код** (`0x000000D1`) и **имя** (`DRIVER_IRQL_NOT_LESS_OR_EQUAL`);
-- **вероятную область** (драйвер, RAM, диск, GPU, питание, системный процесс);
-- **модуль или процесс** из текста события, параметров Kernel-Power 41 или файла `Report.wer`;
-- **человеческое пояснение**, что обычно ломается при этом STOP.
-
-Источники кода: WER SystemErrorReporting, провайдер BugCheck, поле `BugcheckCode` у Kernel-Power 41, архив Windows Error Reporting, сопоставление минидампов по времени.
-
-База покрывает частые коды (`0xA`, `0x1A`, `0x3B`, `0x50`, `0x7E`, `0x9F`, `0xD1`, `0xEF`, `0x116`, `0x124`, `0x133` и др.). Неизвестный код всё равно выводится — без выдуманной причины.
+База покрывает частые STOP (`0xA`, `0x1A`, `0x3B`, `0x50`, `0x7E`, `0x9F`, `0xD1`, `0xEF`, `0x116`, `0x124`, `0x133` и др.). Неизвестный код выводится без выдуманной причины.
 
 ---
 
 ## Анализ ±5 минут
 
-Для каждого критичного события скрипт показывает:
-
-- записи **до** события (возможные причины);
-- якорь (само событие);
-- записи **после** (следствие / загрузка);
-- краткий **вывод по окну** (диск / WHEA / BSOD / GPU или «явной причины нет»).
-
-Шумные источники в этом окне тоже отфильтровываются.
+До события / якорь / после / краткий вывод (диск, WHEA, BSOD, GPU или «причины рядом нет»). Шум в этом окне тоже скрыт.
 
 ---
 
 ## Рекомендации по фактам
 
-Блок строится из того, что реально найдено:
+- 41 + диск → бэкап и SSD/NVMe  
+- серия ошибок диска сильнее единичного случая  
+- BSOD → минидампы и STOP  
+- WHEA / RAM → `mdsched`, XMP выкл  
+- 41 после сна → выключить Fast Startup и проверить  
+- dirty bit → бэкап и проверка тома  
+- дампы выключены → включить минидампы  
 
-- Kernel-Power 41 + disk → бэкап, SSD/NVMe, слот M.2, питание;
-- серия ошибок диска сильнее единичного 153;
-- BSOD → минидампы, код STOP, драйвер из стека;
-- WHEA / RAM → `mdsched`, XMP/разгон, BIOS, температуры;
-- GPU → чистая переустановка драйвера;
-- 41 после сна / Fast Startup → полное выключение для проверки;
-- dirty bit → бэкап и проверка тома;
-- дампы выключены → включить минидампы, иначе следующий BSOD пропадёт.
-
-Общих шаблонов вроде «почините Windows Update» нет. Дата последнего KB показывается только как контекст.
+Общих советов «почините Windows Update» нет.
 
 ---
 
 ## Что скрывается как шум
 
-В отчёт **намеренно не попадают** (обычно не ломают ПК):
+- Windows Update Client (кроме блока «последнее обновление»)  
+- DCOM, DNS, DHCP, служба времени  
+- SCM как отдельный топ  
+- TPM / SPP / PerfNet и похожий фон  
+- краши Steam, Chrome, Discord, игр  
 
-- Windows Update Client (кроме отдельного блока «последнее обновление»)
-- DCOM, DNS, DHCP, служба времени
-- Service Control Manager (как отдельный топ)
-- TPM / SPP / PerfNet / ETW и похожий фон
-- краши Steam, Chrome, Discord, игр и прочего бытового софта
-
-Их всё ещё можно смотреть вручную в `eventvwr.msc`. Полный режим (меню **4**) показывает служебный шум, но **не** подмешивает игры в вердикт железа.
-
----
-
-## Типичные связки симптомов
-
-| Симптом | Куда смотреть в отчёте |
-|---------|-------------------------|
-| Внезапная перезагрузка | Kernel-Power 41 + блок ±5 мин + сон / Fast Startup |
-| Синий экран | BSOD / Minidump + «дампы включены?» |
-| Зависания, отвал диска | disk / volmgr / stornvme + dirty bit |
-| «Сломалось после обновления» | блок обновлений Windows + свежие драйверы |
-| Артефакты / TDR | Display / GPU |
-| Отвал флешки / сети / слота | USB / NDIS / PCIe |
-| WHEA ID 3 | PCIe / NVMe / RAM / CPU |
+Полный режим (меню **4**) показывает служебный шум, но **не** считает игры железом.
 
 ---
 
 ## Ошибка ParserError / кракозябры
 
-Если видите `Unexpected token`, `hash literal was incomplete`, кириллица как `P?P?`:
-
-→ `WinErrorParser.ps1` сохранён **не** как UTF-8 with BOM.
-
-В VS Code: **Save with Encoding → UTF-8 with BOM**.  
-Bat-файл должен быть **без BOM**.
+`Unexpected token` / `hash literal was incomplete` / кириллица как `P?P?` → сохраните `WinErrorParser.ps1` как **UTF-8 with BOM**. Bat — **без BOM**.
 
 ---
 
 ## Проверка файлов (SHA256)
-
-После клонирования можно сверить хеши:
 
 ```powershell
 Get-FileHash .\WinErrorParser.ps1, .\Start-WinErrorParser.bat -Algorithm SHA256
@@ -340,45 +280,37 @@ Get-FileHash .\WinErrorParser.ps1, .\Start-WinErrorParser.bat -Algorithm SHA256
 
 | Файл | SHA256 |
 |------|--------|
-| `WinErrorParser.ps1` | `62F4219B86487DEAABA4D6E98D896A1E774B01AF5E6AC6B0D06110F83F127D0A` |
+| `WinErrorParser.ps1` | `31E800A170275B5CE68686E7C8DEB8F4F6C19AE47D1C7039883BBE2AF9653069` |
 | `Start-WinErrorParser.bat` | `3F05F9EEF56ACDD039016C0980D6B42D3890F16A770374927F1BF4C460C70EEA` |
 
-Хеши относятся к релизу **2.1.0**. Если правили файлы локально — они изменятся.
+Хеши для релиза **2.1.0**.
 
 ---
 
 ## Ограничения и FAQ
 
-- Не заменяет Memtest86 и SMART-утилиты производителя SSD.  
-- Очищенный журнал → «всё зелёное» не значит, что проблем не было раньше.  
-- Без администратора диагностика неполная, очистка недоступна.  
-- Только Windows. Интернет не используется и не нужен.  
-- Полный NVMe SMART Windows не отдаёт — для атрибутов нужна утилита производителя.
+- Не заменяет Memtest86 и утилиту производителя SSD.  
+- После очистки журналов отчёт может быть «зелёным».  
+- Без администратора диагностика неполная.  
+- Полный NVMe SMART Windows не отдаёт.
 
-**Как изменить период анализа?**  
-Пункт меню **3** или параметр `-DaysBack`.
-
-**Отчёт пропал после повторного запуска?**  
-Каждый запуск создаёт два файла с датой в имени: `.txt` и `.html`. Старые не затираются.
-
-**Очистка удаляет отчёт?**  
-Нет. Чистятся только журналы Windows.
-
-**Лицензия?**  
-[MIT](LICENSE) — можно копировать, менять и выкладывать с указанием копирайта.
+**Период?** Меню **3** или `-DaysBack`.  
+**Отчёт затирается?** Нет — каждый запуск с новой датой в имени.  
+**Очистка удаляет TXT/HTML?** Нет, только журналы Windows.  
+**Зачем `WinErrorParser_LastState.json`?** Память прошлого прогона для сравнения. В git не входит.  
+**Лицензия:** [MIT](LICENSE).
 
 ---
 
-## Краткая шпаргалка (RU)
+## Шпаргалка (RU)
 
 ```text
-Запуск:     Start-WinErrorParser.bat  (администратор)
-Меню:       1 диагностика | 2 очистка | 3 период | 4 полный отчёт | 5 язык
-            6 последний HTML | 7 список отчётов | 8 ZIP
-Скрипт:     WinErrorParser.ps1        (UTF-8 с BOM), v2.1
-Отчёт:      WinErrorParser_Report_RU_дата.txt + .html
-Период:     14 дней (меню), корреляция ±5 мин
-Фокус:      неисправности железа + расшифровка BSOD
+Запуск:   Start-WinErrorParser.bat  (администратор)
+Меню:     1 диагностика | 2 очистка | 3 период | 4 полный отчёт | 5 язык
+          6 последний HTML | 7 список | 8 ZIP
+Скрипт:   WinErrorParser.ps1        UTF-8 с BOM, v2.1
+Отчёт:    WinErrorParser_Report_RU_дата.txt + .html
+Период:   14 дней, корреляция ±5 мин
 ```
 
 <p align="right"><a href="#winerrorparser">⬆ К переключателю языка</a></p>
@@ -387,40 +319,30 @@ Get-FileHash .\WinErrorParser.ps1, .\Start-WinErrorParser.bat -Algorithm SHA256
 
 # 🇬🇧 English version
 
-**WinErrorParser 2.1** is a standalone Windows PC diagnostics tool. It reads Event Logs and hardware inventory, filters noise, **decodes BSODs** (STOP code, module/process, likely cause), analyzes critical failures (including a **±5 minute** window around Kernel-Power / BSOD / WHEA / disk), and writes a **Russian or English report** to the console, a timestamped text file, and HTML.
+**WinErrorParser 2.1** is an offline Windows PC diagnostics tool. It reads Event Logs and hardware inventory, filters noise, **decodes BSODs**, inspects a **±5 minute** window around critical faults, and writes a **Russian or English** report to the console, a timestamped `.txt`, and an HTML dashboard.
 
-No Internet required. Diagnostics are read-only for the OS; log clearing (menu item) changes Event Log only after explicit confirmation.
+No Internet. Diagnostics are read-only. Log clearing changes Event Log only after you type `YES` / `ДА`.
 
 ### What’s new in 2.1
 
-- Executive summary at the top of the TXT and HTML jump links.
-- Event **weight**: a single hit vs a repeating series.
-- **Diff against the previous run** in the same folder.
-- Game/browser crashes are hidden and **do not** drive the hardware verdict.
+- HTML dashboard: verdict, stat cards, system, disks.
+- Cards **Findings / Kernel-Power 41 / Disk / WHEA** are clickable when the count is > 0 — they open the full log filtered to that topic.
+- Executive summary in the TXT, jump links in HTML.
+- Event weight: single vs repeating series.
+- Diff against the previous run in the same folder.
+- Game/browser crashes are hidden and do **not** drive the hardware verdict.
 - “Broke after a Windows update” context.
-- Sleep / Fast Startup, dirty bit / CHKDSK, USB-NIC-PCIe dropouts, dump settings, pending reboot, BIOS date.
-- Menu: open last HTML, recent reports, ZIP the last TXT+HTML pair.
+- Sleep / Fast Startup, dirty bit / CHKDSK, USB-NIC-PCIe, dump settings, BIOS date.
+- Menu: last HTML, recent reports, ZIP.
 
-### Quick start (EN)
+### Quick start
 
-1. Put `Start-WinErrorParser.bat` and `WinErrorParser.ps1` in the **same** folder.
+1. Clone or download the repo. Keep `Start-WinErrorParser.bat` and `WinErrorParser.ps1` in the **same** folder.
 2. Right-click the bat → **Run as administrator**.
-3. Menu:
-   - **1** — PC diagnostics
-   - **2** — clear Event Logs
-   - **3** — analysis period
-   - **4** — faults-only / full report
-   - **5** — report language RU/EN
-   - **6** — open last HTML
-   - **7** — recent reports
-   - **8** — ZIP the last report
-   - **0** — exit
-4. After diagnostics, open the timestamped `WinErrorParser_Report_*.txt` or `.html`. A short summary is also copied to the clipboard.
+3. Choose **1** — diagnostics.
+4. Open the new `WinErrorParser_Report_*.html` or `.txt`.
 
-> **Encoding:**
-> - `WinErrorParser.ps1` — **UTF-8 with BOM**
-> - `Start-WinErrorParser.bat` — **ASCII, no BOM**
-> Download repo files as-is; do not paste into Notepad without BOM.
+> **Encoding:** `.ps1` = **UTF-8 with BOM**. `.bat` = **ASCII, no BOM**. Download repo files as-is.
 
 ---
 
@@ -431,16 +353,15 @@ No Internet required. Diagnostics are read-only for the OS; log clearing (menu i
 3. [Project files](#project-files)
 4. [Requirements](#requirements)
 5. [How to run](#how-to-run)
-6. [Clearing Event Logs](#clearing-event-logs)
-7. [Report layout](#report-layout)
-8. [Diagnostic sections](#diagnostic-sections)
+6. [HTML dashboard](#html-dashboard)
+7. [Clearing Event Logs](#clearing-event-logs)
+8. [Report layout](#report-layout)
 9. [±5 minute analysis](#5-minute-analysis)
-10. [Fact-based recommendations](#fact-based-recommendations)
-11. [Noise filtering](#noise-filtering)
-12. [ParserError](#parsererror)
-13. [File hashes (SHA256)](#file-hashes-sha256)
-14. [Limits & FAQ](#limits--faq)
-15. [Russian version](#-русская-версия)
+10. [Noise filtering](#noise-filtering)
+11. [ParserError](#parsererror)
+12. [SHA256](#file-hashes-sha256)
+13. [Limits & FAQ](#limits--faq)
+14. [Russian](#-русская-версия)
 
 ---
 
@@ -458,30 +379,22 @@ No Internet required. Diagnostics are read-only for the OS; log clearing (menu i
 0. Exit
 ```
 
-After diagnostics or cleanup you return to the menu.
-
 ---
 
 ## Features
 
 | Feature | Purpose |
 |---------|---------|
-| Menu: diagnose / clear / archive | Period, language, last HTML, ZIP |
-| RU/EN report (console + `.txt` + HTML) | Timestamped archive + clipboard summary |
-| Executive summary + HTML anchors | Verdict and event weight at the top |
-| Event frequency | Single vs repeating series |
+| Admin bat + menu | Period, language, archive, log clear |
+| RU/EN console + TXT + HTML | Timestamped pair + clipboard summary |
+| HTML dashboard | Verdict, cards, system, disks; click a card to filter the log |
+| Event weight | Single vs series |
 | Diff vs previous run | New / increased / gone |
-| BSOD decode | STOP code, name, module/process, likely area |
-| Noise filter or full mode | Update / DCOM / DNS hidden |
-| Game/browser crashes | Hidden; they do **not** affect the hardware verdict |
-| ±5 min correlation | System + Application + Setup around critical events |
-| System / disks / SMART / RAM | Model, volumes, PhysicalDisk, reliability counters |
-| WHEA, Kernel-Power 41, EventLog 6008 | Hardware faults, sudden reboots |
-| Sleep / Fast Startup / dumps | 41 after resume; are minidumps enabled? |
-| Dirty bit / CHKDSK | Volume was not closed cleanly |
-| USB / NIC / PCIe | Bus dropouts, not only the SSD |
-| Windows update context | Did faults start after the last KB? |
-| Event Log cleanup | Exports `.evtx` first; wipe-all is behind `CLEAR ALL` |
+| BSOD decode | STOP code, module/process, likely area |
+| Noise filter | Update / DCOM / DNS hidden; games ignored for the verdict |
+| ±5 min correlation | Around Kernel-Power / BSOD / WHEA / disk |
+| Storage / RAM / WHEA / 41 / 6008 | Real hardware faults |
+| Sleep, dumps, dirty bit, bus dropouts | Extra context without leaving the box |
 
 ---
 
@@ -489,30 +402,24 @@ After diagnostics or cleanup you return to the menu.
 
 | File | Role |
 |------|------|
-| `Start-WinErrorParser.bat` | Launcher (ASCII, **no BOM**), UAC, `.ps1` BOM check |
-| `WinErrorParser.ps1` | Menu, diagnostics, log clear (**UTF-8 with BOM**), v2.1 |
+| `Start-WinErrorParser.bat` | Launcher (ASCII, **no BOM**) |
+| `WinErrorParser.ps1` | Tool (UTF-8 **with BOM**), v2.1 |
 | `LICENSE` | MIT |
-| `docs/preview.svg` | Dashboard preview for GitHub |
-| `WinErrorParser_Report_RU_date.txt` + `.html` | Two files per run (not committed) |
-| `README.md` | This guide (RU + EN) |
+| `docs/preview.png` | GitHub preview |
+| `examples/sample_report.txt` | Synthetic TXT snippet |
+| `README.md` | This guide |
+
+Live reports, `WinErrorParser_LastState.json`, ZIP files, and `logs_backup_*` are gitignored.
 
 ---
 
 ## Requirements
 
-- Windows 10 / 11 (Windows PowerShell 5.1).
-- **Administrator** rights for full diagnostics and log clearing.
-- No Internet.
-
-Diagnostics do not change services/registry/drivers. Log clear only touches Event Log after typing `ДА` or `YES` (logs are exported to `logs_backup_*` first).
+Windows 10 / 11, Windows PowerShell 5.1, **Administrator** for a full run. No Internet.
 
 ---
 
 ## How to run
-
-1. Place both files in one folder.
-2. Run the bat as administrator.
-3. Pick a menu item.
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ".\WinErrorParser.ps1"
@@ -523,59 +430,41 @@ Parameters: `-DaysBack`, `-Language ru|en`, `-FullReport`, `-NonInteractive`, `-
 
 ---
 
+## HTML dashboard
+
+Offline, no CDN. **Overview** and **Full log** tabs. A card with a count **> 0** opens the log filtered to that topic. A **0** card does nothing. HTML is UTF-8 **without BOM** so browsers do not show an encoding error.
+
+---
+
 ## Clearing Event Logs
 
-Menu item **2** (admin required).
-
-| Mode | Clears |
-|------|--------|
-| 1 | System, Application, Setup |
-| 2 | Same + Security |
-| 3 | All enabled logs that contain records |
-
-Confirm by typing **`ДА`** or **`YES`**. Mode 9 (all logs) also requires **`CLEAR ALL`** / **`ОЧИСТИТЬ ВСЁ`**. Save the diagnostics report first if you need the old evidence.
+Menu **2**. Type **`YES`** or **`ДА`**. Wipe-all also needs **`CLEAR ALL`** / **`ОЧИСТИТЬ ВСЁ`**. Logs are exported to `logs_backup_*` first. Save a diagnostics report before clearing.
 
 ---
 
 ## Report layout
 
-Self-check → System → Disks → RAM → Sleep → WHEA → Kernel-Power 41 (±5 min) → BSOD → Disk / dirty volume → GPU / bus → system-process crashes → drivers / Windows update → frequency / previous-run diff → **fact-based analysis** → Summary.
+Executive summary → self-check → system / disks / RAM → sleep → WHEA / Kernel-Power 41 / BSOD → storage / GPU / bus → system-process crashes → drivers / Windows update → frequency / previous-run diff → fact-based analysis → summary.
 
-The saved TXT starts with an **executive summary**. Report files: timestamped `WinErrorParser_Report_RU_yyyy-MM-dd_HHmmss.txt` and the matching `.html` (UTF-8 with BOM).
-
-Default window: **14 days** (`$Script:DaysBack`).
-
----
-
-## Diagnostic sections
-
-Default period: **14 days** (menu **3** or `-DaysBack`).
-
-Inventory and SMART, WHEA / Kernel-Power 41 / BSOD decode, storage stack, GPU TDR, sleep/Fast Startup, dirty volumes, USB-NIC-PCIe, update timing, event weight, and a diff against the last run in the same folder.
+Files: `WinErrorParser_Report_RU_yyyy-MM-dd_HHmmss.txt` + matching `.html`. Default window: **14 days**.
 
 ---
 
 ## ±5 minute analysis
 
-For each critical event the script shows before/anchor/after entries and a short window conclusion (storage / WHEA / BSOD / GPU / no clear cause). Noise providers are filtered here too.
-
----
-
-## Fact-based recommendations
-
-Built only from findings: 41+disk → backup & SSD; repeating disk errors outweigh a one-off; BSOD → dumps & STOP code; WHEA/RAM → `mdsched` & XMP off; GPU → clean driver reinstall; 41 after sleep → disable Fast Startup; dirty bit → backup & volume check. No generic “fix Windows Update” checklist.
+Before / anchor / after plus a short window conclusion. Noise is filtered here too.
 
 ---
 
 ## Noise filtering
 
-Intentionally hidden from the verdict: Windows Update Client, DCOM, DNS/DHCP, Time service, SCM as a top noise source, TPM/SPP/PerfNet-like background, and **game/browser crashes**. Use Event Viewer manually if you need them. Full-report mode still does not treat Steam/Chrome as hardware.
+Hidden from the verdict: Windows Update Client, DCOM, DNS/DHCP, time service, SCM as a top source, TPM/SPP/PerfNet-like noise, and **game/browser crashes**. Full-report mode still does not treat Steam/Chrome as hardware.
 
 ---
 
 ## ParserError
 
-`Unexpected token` / `hash literal was incomplete` → save `WinErrorParser.ps1` as **UTF-8 with BOM**. Keep the `.bat` **without** BOM.
+`Unexpected token` / broken Cyrillic → save `WinErrorParser.ps1` as **UTF-8 with BOM**. Keep the `.bat` **without** BOM.
 
 ---
 
@@ -587,24 +476,17 @@ Get-FileHash .\WinErrorParser.ps1, .\Start-WinErrorParser.bat -Algorithm SHA256
 
 | File | SHA256 |
 |------|--------|
-| `WinErrorParser.ps1` | `62F4219B86487DEAABA4D6E98D896A1E774B01AF5E6AC6B0D06110F83F127D0A` |
+| `WinErrorParser.ps1` | `31E800A170275B5CE68686E7C8DEB8F4F6C19AE47D1C7039883BBE2AF9653069` |
 | `Start-WinErrorParser.bat` | `3F05F9EEF56ACDD039016C0980D6B42D3890F16A770374927F1BF4C460C70EEA` |
 
-Hashes are for release **2.1.0**.
+Release **2.1.0**.
 
 ---
 
 ## Limits & FAQ
 
-- Not a replacement for Memtest86 or vendor SSD tools.
-- Cleared logs can look “all green”.
-- Non-admin = incomplete diagnostics; log clear disabled.
-- Windows only. No Internet is used.
-- Windows does not expose full NVMe SMART.
+Not a replacement for Memtest86 or a vendor SSD tool. Cleared logs can look “all green”. Non-admin runs are incomplete. Windows does not expose full NVMe SMART.
 
-**Change analysis period:** menu item **3** or `-DaysBack`.  
-**Report overwritten?** Each run creates a new timestamped `.txt` + `.html` pair. Old files are kept.  
-**Does log clear delete the report file?** No — only Windows Event Logs.  
 **License:** [MIT](LICENSE).
 
 ---
@@ -613,12 +495,10 @@ Hashes are for release **2.1.0**.
 
 ```text
 Launch:   Start-WinErrorParser.bat  (Administrator)
-Menu:     1 diagnose | 2 clear | 3 period | 4 full report | 5 language
-          6 last HTML | 7 recent reports | 8 ZIP
-Script:   WinErrorParser.ps1        (UTF-8 with BOM), v2.1
-Report:   WinErrorParser_Report_RU_date.txt + .html
-Window:   14 days (menu), ±5 min correlation
-Focus:    real hardware faults + BSOD decode
+Menu:     1 diagnose | 2 clear | 3 period | 4 full | 5 language
+          6 last HTML | 7 recent | 8 ZIP
+Script:   WinErrorParser.ps1        UTF-8 with BOM, v2.1
+Report:   WinErrorParser_Report_*_date.txt + .html
 ```
 
 <p align="right"><a href="#winerrorparser">⬆ Back to language switcher</a></p>
