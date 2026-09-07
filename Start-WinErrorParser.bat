@@ -55,10 +55,10 @@ if errorlevel 1 (
     goto :finish
 )
 
-echo Starting diagnostics. Please wait...
+echo Starting WinErrorParser. Please wait...
 echo.
 
-"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0WinErrorParser.ps1"
+"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0WinErrorParser.ps1" %*
 set "ERR=%ERRORLEVEL%"
 
 echo.
@@ -66,7 +66,7 @@ if not "%ERR%"=="0" (
     echo [ERROR] Script exited with code %ERR%.
 ) else (
     echo [OK] Finished.
-    echo Report: %~dp0WinErrorParser_Report_RU.txt
+    echo Reports: timestamped WinErrorParser_Report_*.txt / .html in this folder
 )
 
 :finish
